@@ -9,10 +9,13 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1903 AS build
 WORKDIR /src
-COPY ["MovieDatabase.API/MovieDatabase.API.csproj", "MovieDatabase.API/"]
-RUN dotnet restore "MovieDatabase.API/MovieDatabase.API.csproj"
+COPY ["src/MovieDatabase.API/MovieDatabase.API.csproj", "src/MovieDatabase.API/"]
+COPY ["src/Application/Application.csproj", "src/Application/"]
+COPY ["src/Domain/Domain.csproj", "src/Domain/"]
+COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
+RUN dotnet restore "src/MovieDatabase.API/MovieDatabase.API.csproj"
 COPY . .
-WORKDIR "/src/MovieDatabase.API"
+WORKDIR "/src/src/MovieDatabase.API"
 RUN dotnet build "MovieDatabase.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
