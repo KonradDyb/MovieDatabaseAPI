@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Infrastructure.Persistence.DbContexts;
+using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace MovieDatabase.API
 {
@@ -25,6 +22,13 @@ namespace MovieDatabase.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IMovieDatabaseRepository, MovieDatabaseRepository>();
+
+            services.AddDbContext<MovieDatabaseContext>(options =>
+            {
+                options.UseSqlServer(
+                    @"Server=(localdb)\mssqllocaldb;Database=MovieDatabaseDB;Trusted_Connection=True;");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
