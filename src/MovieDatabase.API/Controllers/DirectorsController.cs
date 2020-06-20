@@ -24,7 +24,7 @@ namespace MovieDatabase.API.Controllers
         public IActionResult GetDirectors()
         {
             var directorsFromRepo = _movieDatabaseRepository.GetDirectors();
-            return new JsonResult(directorsFromRepo);
+            return Ok(directorsFromRepo);
         }
 
 
@@ -32,7 +32,13 @@ namespace MovieDatabase.API.Controllers
         public IActionResult GetDirector(Guid directorId)
         {
             var directorFromRepo = _movieDatabaseRepository.GetDirector(directorId);
-            return new JsonResult(directorFromRepo);
+
+            if(directorFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(directorFromRepo);
         }
     }
 }
