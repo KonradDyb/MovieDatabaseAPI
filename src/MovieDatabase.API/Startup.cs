@@ -31,7 +31,7 @@ namespace MovieDatabase.API
             }).AddXmlDataContractSerializerFormatters();
 
 
-            services.AddAutoMapper(typeof(DirectorsProfile));
+            services.AddAutoMapper(typeof(MapperProfiles));
 
             services.AddScoped<IMovieDatabaseRepository, MovieDatabaseRepository>();
 
