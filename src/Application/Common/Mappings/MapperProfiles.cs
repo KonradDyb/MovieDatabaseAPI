@@ -1,4 +1,5 @@
 ﻿using Application.Directors;
+using Application.Movies;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Application.Common.Mappings
 {
-    public class DirectorsProfile : Profile
+    public class MapperProfiles : Profile
     {
-        public DirectorsProfile()
+        public MapperProfiles()
         {
             CreateMap<Director, DirectorDto>()
                 .ForMember(
@@ -20,6 +21,8 @@ namespace Application.Common.Mappings
                 .ForMember(
                     dest => dest.Age,
                     opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
+
+            CreateMap<Movie, MovieDto>();
         }
     }
 }
