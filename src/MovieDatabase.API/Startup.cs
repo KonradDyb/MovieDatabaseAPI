@@ -1,3 +1,5 @@
+using Application.Common.Mappings;
+using AutoMapper;
 using Infrastructure.Persistence.DbContexts;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace MovieDatabase.API
 {
@@ -26,6 +29,9 @@ namespace MovieDatabase.API
             {
                 setupAction.ReturnHttpNotAcceptable = true;
             }).AddXmlDataContractSerializerFormatters();
+
+
+            services.AddAutoMapper(typeof(DirectorsProfile));
 
             services.AddScoped<IMovieDatabaseRepository, MovieDatabaseRepository>();
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace MovieDatabase.API.Controllers
 {
@@ -15,31 +16,20 @@ namespace MovieDatabase.API.Controllers
     public class DirectorsController : ControllerBase
     {
         private readonly IMovieDatabaseRepository _movieDatabaseRepository;
+        private readonly IMapper _mapper;
 
-        public DirectorsController(IMovieDatabaseRepository movieDatabaseRepository)
+        public DirectorsController(IMovieDatabaseRepository movieDatabaseRepository,
+            IMapper mapper)
         {
             _movieDatabaseRepository = movieDatabaseRepository ?? throw new ArgumentNullException(nameof(movieDatabaseRepository));
-
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet()]
-        public IActionResult GetDirectors()
+        public ActionResult<IEnumerable<DirectorDto>> GetDirectors()
         {
             var directorsFromRepo = _movieDatabaseRepository.GetDirectors();
-            var directors = new List<DirectorDto>();
-
-            foreach (var director in directorsFromRepo)
-            {
-                directors.Add(new DirectorDto()
-                {
-                    Id = director.Id,
-                    Name = $"{director.FirstName} {director.LastName}",
-                    PlaceOfBirth = director.PlaceOfBirth,
-                    Age = director.DateOfBirth.GetCurrentAge()
-                }); 
-
-            }
-            return Ok(directors);
+            return Ok(_mapper.Map<IEnumerable<DirectorDto>>(directorsFromRepo));
         }
 
 
@@ -53,7 +43,7 @@ namespace MovieDatabase.API.Controllers
                 return NotFound();
             }
 
-            return Ok(directorFromRepo);
+            return Ok(_mapper.Map<DirectorDto>(directorFromRepo));
         }
     }
 }
