@@ -1,4 +1,6 @@
-﻿using Infrastructure.Persistence.Services;
+﻿using Application.Directors;
+using Application.Common;
+using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,7 +26,20 @@ namespace MovieDatabase.API.Controllers
         public IActionResult GetDirectors()
         {
             var directorsFromRepo = _movieDatabaseRepository.GetDirectors();
-            return Ok(directorsFromRepo);
+            var directors = new List<DirectorDto>();
+
+            foreach (var director in directorsFromRepo)
+            {
+                directors.Add(new DirectorDto()
+                {
+                    Id = director.Id,
+                    Name = $"{director.FirstName} {director.LastName}",
+                    PlaceOfBirth = director.PlaceOfBirth,
+                    Age = director.DateOfBirth.GetCurrentAge()
+                }); 
+
+            }
+            return Ok(directors);
         }
 
 
