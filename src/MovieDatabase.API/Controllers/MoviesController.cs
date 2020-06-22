@@ -37,7 +37,7 @@ namespace MovieDatabase.API.Controllers
         }
 
         [HttpGet("{movieId}")]
-        public ActionResult<MovieDto> GetMovieForAuthor(Guid directorId, Guid movieId)
+        public ActionResult<MovieDto> GetMovieForDirector(Guid directorId, Guid movieId)
         {
             if (!_movieDatabaseRepository.DirectorExists(directorId))
             {

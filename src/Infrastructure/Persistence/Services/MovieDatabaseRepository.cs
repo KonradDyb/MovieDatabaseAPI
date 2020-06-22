@@ -1,6 +1,7 @@
 ﻿using Application.Directors;
 using Domain.Entities;
 using Infrastructure.Persistence.DbContexts;
+using Infrastructure.Persistence.ResourceParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -170,10 +171,10 @@ namespace Infrastructure.Persistence.Services
             return _context.Directors.Where(x => x.DateOfBirth.Year == yearOfBirth).ToList();
         }
 
-        public IEnumerable<Director> GetDirectors(int yearOfBirth, string searchQuery)
+        public IEnumerable<Director> GetDirectors(DirectorsResourceParameters directorsResourceParameters)
         {
-            if (string.IsNullOrWhiteSpace(searchQuery)
-                 && yearOfBirth == 0)
+            if (string.IsNullOrWhiteSpace(directorsResourceParameters.SearchQuery)
+                 && directorsResourceParameters.YearOfBirth == 0)
             {
                 return GetDirectors();
             }
@@ -181,14 +182,14 @@ namespace Infrastructure.Persistence.Services
             // Deferred Execution
             var collection = _context.Directors as IQueryable<Director>;
 
-            if (yearOfBirth != 0)
+            if (directorsResourceParameters.YearOfBirth != 0)
             {
-                collection = collection.Where(x => x.DateOfBirth.Year == yearOfBirth);
+                collection = collection.Where(x => x.DateOfBirth.Year == directorsResourceParameters.YearOfBirth);
             }
 
-            if (!string.IsNullOrWhiteSpace(searchQuery))
+            if (!string.IsNullOrWhiteSpace(directorsResourceParameters.SearchQuery))
             {
-                searchQuery = searchQuery.Trim();
+               var searchQuery = directorsResourceParameters.SearchQuery.Trim();
                 collection = collection.Where(x => x.FirstName.Contains(searchQuery)
                     || x.LastName.Contains(searchQuery)
                     || x.PlaceOfBirth.Contains(searchQuery));

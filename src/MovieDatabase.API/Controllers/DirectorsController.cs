@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Infrastructure.Persistence.ResourceParameters;
 
 namespace MovieDatabase.API.Controllers
 {
@@ -28,9 +29,9 @@ namespace MovieDatabase.API.Controllers
         [HttpGet()]
         [HttpHead]
         public ActionResult<IEnumerable<DirectorDto>> GetDirectors(
-            int yearOfBirth, string searchQuery)
+            [FromQuery]DirectorsResourceParameters directorsResourceParameters)
         {
-            var directorsFromRepo = _movieDatabaseRepository.GetDirectors(yearOfBirth, searchQuery);
+            var directorsFromRepo = _movieDatabaseRepository.GetDirectors(directorsResourceParameters);
             return Ok(_mapper.Map<IEnumerable<DirectorDto>>(directorsFromRepo));
         }
 
