@@ -14,6 +14,7 @@ namespace Infrastructure.Persistence.Services
         IEnumerable<Director> GetDirectors();
         Director GetDirector(Guid directorId);
         IEnumerable<Director> GetDirectors(IEnumerable<Guid> directorIds);
+        IEnumerable<Director> GetDirectors(int yearOfBirth);
         void AddDirector(Director director);
         void DeleteDirector(Director director);
         void UpdateDirector(Director director);

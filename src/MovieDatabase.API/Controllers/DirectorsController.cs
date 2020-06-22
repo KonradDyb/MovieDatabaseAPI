@@ -27,9 +27,9 @@ namespace MovieDatabase.API.Controllers
 
         [HttpGet()]
         [HttpHead]
-        public ActionResult<IEnumerable<DirectorDto>> GetDirectors()
+        public ActionResult<IEnumerable<DirectorDto>> GetDirectors(int yearOfBirth)
         {
-            var directorsFromRepo = _movieDatabaseRepository.GetDirectors();
+            var directorsFromRepo = _movieDatabaseRepository.GetDirectors(yearOfBirth);
             return Ok(_mapper.Map<IEnumerable<DirectorDto>>(directorsFromRepo));
         }
 

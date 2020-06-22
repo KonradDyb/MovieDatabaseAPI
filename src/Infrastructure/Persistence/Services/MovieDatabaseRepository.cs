@@ -158,5 +158,15 @@ namespace Infrastructure.Persistence.Services
                // dispose resources when needed
             }
         }
+
+        public IEnumerable<Director> GetDirectors(int yearOfBirth)
+        {
+            if (yearOfBirth == 0)
+            {
+                return GetDirectors();
+            }
+
+            return _context.Directors.Where(x => x.DateOfBirth.Year == yearOfBirth).ToList();
+        }
     }
 }
