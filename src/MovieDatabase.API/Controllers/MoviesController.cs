@@ -36,6 +36,24 @@ namespace MovieDatabase.API.Controllers
             return Ok(_mapper.Map<IEnumerable<MovieDto>>(moviesFromRepo));
         }
 
+        [HttpGet("{movieId}")]
+        public ActionResult<MovieDto> GetMovieForAuthor(Guid directorId, Guid movieId)
+        {
+            if (!_movieDatabaseRepository.DirectorExists(directorId))
+            {
+                return NotFound();
+            }
+
+            var movieForDirectorFromRepo = _movieDatabaseRepository.GetMovie(directorId, movieId);
+
+            if (movieForDirectorFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<MovieDto>(movieForDirectorFromRepo));
+        }
+
         
     }
 }
