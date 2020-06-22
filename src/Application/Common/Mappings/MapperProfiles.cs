@@ -22,7 +22,10 @@ namespace Application.Common.Mappings
                     dest => dest.Age,
                     opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
 
-            CreateMap<Movie, MovieDto>();
+            CreateMap<Movie, MovieDto>()
+                .ForMember(
+                dest => dest.ReleaseDate,
+                opt => opt.MapFrom(src => src.ReleaseDate.ToString("d MMMM yyyy")));
         }
     }
 }
