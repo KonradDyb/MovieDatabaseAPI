@@ -28,6 +28,7 @@
     "Docker": {
       "commandName": "Project",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "sqlDebugging": false,
       "publishAllPorts": true,
       "applicationUrl": ""
     }

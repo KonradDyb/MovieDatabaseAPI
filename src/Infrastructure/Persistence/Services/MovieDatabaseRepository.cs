@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Directors;
+using Domain.Entities;
 using Infrastructure.Persistence.DbContexts;
 using System;
 using System.Collections.Generic;
@@ -168,5 +169,34 @@ namespace Infrastructure.Persistence.Services
 
             return _context.Directors.Where(x => x.DateOfBirth.Year == yearOfBirth).ToList();
         }
+
+        public IEnumerable<Director> GetDirectors(int yearOfBirth, string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery)
+                 && yearOfBirth == 0)
+            {
+                return GetDirectors();
+            }
+
+            // Deferred Execution
+            var collection = _context.Directors as IQueryable<Director>;
+
+            if (yearOfBirth != 0)
+            {
+                collection = collection.Where(x => x.DateOfBirth.Year == yearOfBirth);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(x => x.FirstName.Contains(searchQuery)
+                    || x.LastName.Contains(searchQuery)
+                    || x.PlaceOfBirth.Contains(searchQuery));
+            }
+
+            // Now it executes and can execute both search and filter query
+            return collection.ToList();
+        }
     }
+    
 }
