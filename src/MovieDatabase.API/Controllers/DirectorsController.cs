@@ -26,6 +26,7 @@ namespace MovieDatabase.API.Controllers
         }
 
         [HttpGet()]
+        [HttpHead]
         public ActionResult<IEnumerable<DirectorDto>> GetDirectors()
         {
             var directorsFromRepo = _movieDatabaseRepository.GetDirectors();
