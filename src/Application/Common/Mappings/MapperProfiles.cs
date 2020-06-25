@@ -26,6 +26,8 @@ namespace Application.Common.Mappings
                 .ForMember(
                 dest => dest.ReleaseDate,
                 opt => opt.MapFrom(src => src.ReleaseDate.ToString("d MMMM yyyy")));
+
+            CreateMap<DirectorForCreationDto, Director>();
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Infrastructure.Persistence.ResourceParameters;
+using Domain.Entities;
 
 namespace MovieDatabase.API.Controllers
 {
@@ -36,7 +37,7 @@ namespace MovieDatabase.API.Controllers
         }
 
 
-        [HttpGet("{directorId}")]
+        [HttpGet("{directorId}", Name = "GetDirector")]
         public IActionResult GetDirector(Guid directorId)
         {
             var directorFromRepo = _movieDatabaseRepository.GetDirector(directorId);
@@ -47,6 +48,20 @@ namespace MovieDatabase.API.Controllers
             }
 
             return Ok(_mapper.Map<DirectorDto>(directorFromRepo));
+        }
+
+        [HttpPost]
+        public ActionResult<DirectorDto> CreateDirector(DirectorForCreationDto director)
+        {
+            var directorEntity = _mapper.Map<Director>(director);
+            // At this moment, the entity hasnt been added to database.
+            // It's been added on the DbContext, which represents a session with database.
+             _movieDatabaseRepository.AddDirector(directorEntity);
+            _movieDatabaseRepository.Save();
+
+            var directorToReturn = _mapper.Map<DirectorDto>(directorEntity);
+            return CreatedAtRoute("GetDirector", new { directorId = directorToReturn.Id },
+                directorToReturn);
         }
     }
 }
