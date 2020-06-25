@@ -1,5 +1,7 @@
-﻿using Application.Movies;
+﻿using Application.Directors;
+using Application.Movies;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -36,7 +38,7 @@ namespace MovieDatabase.API.Controllers
             return Ok(_mapper.Map<IEnumerable<MovieDto>>(moviesFromRepo));
         }
 
-        [HttpGet("{movieId}")]
+        [HttpGet("{movieId}", Name = "GetMovieForDirector")]
         public ActionResult<MovieDto> GetMovieForDirector(Guid directorId, Guid movieId)
         {
             if (!_movieDatabaseRepository.DirectorExists(directorId))
@@ -54,6 +56,25 @@ namespace MovieDatabase.API.Controllers
             return Ok(_mapper.Map<MovieDto>(movieForDirectorFromRepo));
         }
 
-        
+        [HttpPost]
+        public ActionResult<DirectorDto> CreateMovieForDirector(
+            Guid directorId, MovieForCreationDto movie)
+        {
+            if (!_movieDatabaseRepository.DirectorExists(directorId))
+            {
+                return NotFound();
+            }
+
+            var movieEntity = _mapper.Map<Movie>(movie);
+            _movieDatabaseRepository.AddMovie(directorId, movieEntity);
+            _movieDatabaseRepository.Save();
+
+            var movieToReturn = _mapper.Map<MovieDto>(movieEntity);
+
+            return CreatedAtRoute("GetMovieForDirector",
+                new { directorId = movieToReturn.DirectorId, movieId = movieToReturn.Id }, movieToReturn);
+
+
+        }
     }
 }

@@ -28,6 +28,6 @@ namespace Application.Common.Mappings
                 opt => opt.MapFrom(src => src.ReleaseDate.ToString("d MMMM yyyy")));
 
             CreateMap<DirectorForCreationDto, Director>();
-        }
+            CreateMap<MovieForCreationDto, Movie>();        }
     }
 }
