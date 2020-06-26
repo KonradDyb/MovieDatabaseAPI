@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.Movies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,7 @@ namespace Application.Directors
         public string LastName { get; set; }
         public DateTimeOffset DateOfBirth { get; set; }
         public string PlaceOfBirth { get; set; }
+        public ICollection<MovieForCreationDto> Movies { get; set; }
+         = new List<MovieForCreationDto>();
     }
 }
