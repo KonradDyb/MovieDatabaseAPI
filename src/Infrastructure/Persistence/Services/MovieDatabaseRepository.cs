@@ -86,6 +86,8 @@ namespace Infrastructure.Persistence.Services
                 movie.Id = Guid.NewGuid();
             }
 
+            // DbContext will contains a new author and the new list of courses for that author.
+            // When we call Save these are persisted.
             _context.Directors.Add(director);
         }
 
