@@ -63,5 +63,12 @@ namespace MovieDatabase.API.Controllers
             return CreatedAtRoute("GetDirector", new { directorId = directorToReturn.Id },
                 directorToReturn);
         }
+
+        [HttpOptions]
+        public IActionResult GetDirectorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
     }
 }
