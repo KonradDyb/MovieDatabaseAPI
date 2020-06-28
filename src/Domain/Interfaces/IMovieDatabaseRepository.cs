@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
-using Infrastructure.Persistence.ResourceParameters;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Infrastructure.Persistence.Services
+namespace Domain.Interfaces
 {
     public interface IMovieDatabaseRepository
     {    
@@ -12,11 +12,11 @@ namespace Infrastructure.Persistence.Services
         void AddMovie(Guid directorId, Movie movie);
         void UpdateMovie(Movie movie);
         void DeleteMovie(Movie movie);
-        IEnumerable<Director> GetDirectors();
-        Director GetDirector(Guid directorId);
+        Task<IEnumerable<Director>> GetDirectors();
+        Task<Director> GetDirector(Guid directorId);
         IEnumerable<Director> GetDirectors(IEnumerable<Guid> directorIds);
-        IEnumerable<Director> GetDirectors(int yearOfBirth);
-        IEnumerable<Director> GetDirectors(DirectorsResourceParameters directorsResourceParameters);
+        //IEnumerable<Director> GetDirectors(int yearOfBirth);
+        Task<IEnumerable<Director>> GetDirectors(IDirectorsResourceParameters directorsResourceParameters);
         void AddDirector(Director director);
         void DeleteDirector(Director director);
         void UpdateDirector(Director director);

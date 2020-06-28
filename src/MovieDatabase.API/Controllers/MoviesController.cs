@@ -2,6 +2,7 @@
 using Application.Movies;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;

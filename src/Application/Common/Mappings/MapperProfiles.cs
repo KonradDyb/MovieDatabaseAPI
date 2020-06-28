@@ -1,4 +1,5 @@
 ﻿using Application.Directors;
+using Application.Directors.Commands;
 using Application.Movies;
 using AutoMapper;
 using Domain.Entities;
@@ -27,7 +28,9 @@ namespace Application.Common.Mappings
                 dest => dest.ReleaseDate,
                 opt => opt.MapFrom(src => src.ReleaseDate.ToString("d MMMM yyyy")));
 
-            CreateMap<DirectorForCreationDto, Director>();
-            CreateMap<MovieForCreationDto, Movie>();        }
+            //CreateMap<DirectorForCreationDto, Director>();
+            CreateMap<MovieForCreationDto, Movie>();
+            CreateMap<CreateDirectorCommand, Director>();
+        }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Application.Directors;
 using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.Persistence.DbContexts;
 using Infrastructure.Persistence.ResourceParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Services
 {
@@ -111,19 +113,19 @@ namespace Infrastructure.Persistence.Services
             _context.Directors.Remove(director);
         }
         
-        public Director GetDirector(Guid directorId)
+        public async Task<Director> GetDirector(Guid directorId)
         {
             if (directorId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(directorId));
             }
 
-            return _context.Directors.FirstOrDefault(a => a.Id == directorId);
+            return await Task.FromResult(_context.Directors.FirstOrDefault(a => a.Id == directorId));
         }
 
-        public IEnumerable<Director> GetDirectors()
+        public async Task<IEnumerable<Director>> GetDirectors()
         {
-            return _context.Directors.ToList<Director>();
+            return await Task.FromResult(_context.Directors.ToList<Director>());
         }
          
         public IEnumerable<Director> GetDirectors(IEnumerable<Guid> directorIds)
@@ -163,22 +165,22 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        public IEnumerable<Director> GetDirectors(int yearOfBirth)
+        public async Task<IEnumerable<Director>> GetDirectors(int yearOfBirth)
         {
             if (yearOfBirth == 0)
             {
-                return GetDirectors();
+                return await GetDirectors();
             }
 
             return _context.Directors.Where(x => x.DateOfBirth.Year == yearOfBirth).ToList();
         }
 
-        public IEnumerable<Director> GetDirectors(DirectorsResourceParameters directorsResourceParameters)
+        public async Task<IEnumerable<Director>> GetDirectors(IDirectorsResourceParameters directorsResourceParameters)
         {
             if (string.IsNullOrWhiteSpace(directorsResourceParameters.SearchQuery)
                  && directorsResourceParameters.YearOfBirth == 0)
             {
-                return GetDirectors();
+                return await GetDirectors();
             }
 
             // Deferred Execution

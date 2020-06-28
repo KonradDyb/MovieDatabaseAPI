@@ -1,7 +1,9 @@
 using Application.Common.Mappings;
 using AutoMapper;
+using Domain.Interfaces;
 using Infrastructure.Persistence.DbContexts;
 using Infrastructure.Persistence.Services;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Reflection;
 
 namespace MovieDatabase.API
 {
@@ -26,6 +29,8 @@ namespace MovieDatabase.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
@@ -34,7 +39,10 @@ namespace MovieDatabase.API
 
             services.AddAutoMapper(typeof(MapperProfiles));
 
+            services.AddMediatR(AppDomain.CurrentDomain.Load("Application"));
             services.AddScoped<IMovieDatabaseRepository, MovieDatabaseRepository>();
+
+
 
             services.AddDbContext<MovieDatabaseContext>(options =>
             {

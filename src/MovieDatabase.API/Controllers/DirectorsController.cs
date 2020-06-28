@@ -10,58 +10,43 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Infrastructure.Persistence.ResourceParameters;
 using Domain.Entities;
+using Domain.Interfaces;
+using Application.Directors.Queries;
+using MediatR;
+using Application.Directors.Commands;
 
 namespace MovieDatabase.API.Controllers
 {
     [ApiController]
     [Route("api/directors")]
-    public class DirectorsController : ControllerBase
+    public class DirectorsController : ApiController
     {
-        private readonly IMovieDatabaseRepository _movieDatabaseRepository;
-        private readonly IMapper _mapper;
-
-        public DirectorsController(IMovieDatabaseRepository movieDatabaseRepository,
-            IMapper mapper)
-        {
-            _movieDatabaseRepository = movieDatabaseRepository ?? throw new ArgumentNullException(nameof(movieDatabaseRepository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
         [HttpGet()]
         [HttpHead]
-        public ActionResult<IEnumerable<DirectorDto>> GetDirectors(
+        public async Task<ActionResult<IEnumerable<DirectorDto>>> GetDirectors(
             [FromQuery]DirectorsResourceParameters directorsResourceParameters)
         {
-            var directorsFromRepo = _movieDatabaseRepository.GetDirectors(directorsResourceParameters);
-            return Ok(_mapper.Map<IEnumerable<DirectorDto>>(directorsFromRepo));
+            var result = await Mediator.Send(new GetDirectorsQuery { DirectorsResourceParameters = directorsResourceParameters });
+
+            return result != null ? (ActionResult)Ok(result) : NotFound();
+
         }
 
 
         [HttpGet("{directorId}", Name = "GetDirector")]
-        public IActionResult GetDirector(Guid directorId)
+        public async Task<IActionResult> GetDirector(Guid directorId)
         {
-            var directorFromRepo = _movieDatabaseRepository.GetDirector(directorId);
+            var result = await Mediator.Send(new GetDirectorByIdQuery{ DirectorId = directorId });
 
-            if(directorFromRepo == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<DirectorDto>(directorFromRepo));
+            return result != null ? (IActionResult)Ok(result) : NotFound();
         }
 
         [HttpPost]
-        public ActionResult<DirectorDto> CreateDirector(DirectorForCreationDto director)
+        public async Task<ActionResult<DirectorDto>> CreateDirector(CreateDirectorCommand command)
         {
-            var directorEntity = _mapper.Map<Director>(director);
-            // At this moment, the entity hasnt been added to database.
-            // It's been added on the DbContext, which represents a session with database.
-             _movieDatabaseRepository.AddDirector(directorEntity);
-            _movieDatabaseRepository.Save();
+            var result = await Mediator.Send(command);
 
-            var directorToReturn = _mapper.Map<DirectorDto>(directorEntity);
-            return CreatedAtRoute("GetDirector", new { directorId = directorToReturn.Id },
-                directorToReturn);
+            return CreatedAtRoute("GetDirector", new { directorId = result.Id }, result);
         }
 
         [HttpOptions]
