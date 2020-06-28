@@ -5,7 +5,6 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +15,8 @@ namespace Application.DirectorCollections.Queries
         public IEnumerable<Guid> Ids { get; set; }
     }
 
-    public class GetDirectorCollectionQueryHandler : IRequestHandler<GetDirectorCollectionQuery, IEnumerable<DirectorDto>>
+    public class GetDirectorCollectionQueryHandler : IRequestHandler
+        <GetDirectorCollectionQuery, IEnumerable<DirectorDto>>
     {
         private readonly IMovieDatabaseRepository _movieDatabaseRepository;
         private readonly IMapper _mapper;
@@ -33,7 +33,6 @@ namespace Application.DirectorCollections.Queries
             {
                 return null;
             }
-
 
             var directorEntities = await _movieDatabaseRepository.GetDirectors(request.Ids);
 

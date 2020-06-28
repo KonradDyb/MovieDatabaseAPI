@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +22,7 @@ namespace Application.Directors.Queries
             _movieDatabaseRepository = movieDatabaseRepository;
             _mapper = mapper;
         }
+
         public async Task<DirectorDto> Handle(GetDirectorByIdQuery request, CancellationToken cancellationToken)
         {
             var directorFromRepo = await _movieDatabaseRepository.GetDirector(request.DirectorId);

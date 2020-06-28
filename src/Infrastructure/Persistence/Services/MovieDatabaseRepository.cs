@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void AddMovie(Guid directorId, Movie movie)
+        public async Task AddMovie(Guid directorId, Movie movie)
         {
             if (directorId == Guid.Empty)
             {
@@ -32,7 +32,7 @@ namespace Infrastructure.Persistence.Services
             }
             // always set the directorId to the passed-in directorId
             movie.DirectorId = directorId;
-            _context.Movies.Add(movie); 
+            await Task.FromResult(_context.Movies.Add(movie)); 
         }         
 
         public void DeleteMovie(Movie movie)
@@ -40,7 +40,7 @@ namespace Infrastructure.Persistence.Services
             _context.Movies.Remove(movie);
         }
   
-        public Movie GetMovie(Guid directorId, Guid movieId)
+        public async Task<Movie> GetMovie(Guid directorId, Guid movieId)
         {
             if (directorId == Guid.Empty)
             {
@@ -52,20 +52,20 @@ namespace Infrastructure.Persistence.Services
                 throw new ArgumentNullException(nameof(movieId));
             }
 
-            return _context.Movies
-              .Where(x => x.DirectorId == directorId && x.Id == movieId).FirstOrDefault();
+            return await Task.FromResult(_context.Movies
+              .Where(x => x.DirectorId == directorId && x.Id == movieId).FirstOrDefault());
         }
 
-        public IEnumerable<Movie> GetMovies(Guid directorId)
+        public async Task<IEnumerable<Movie>> GetMovies(Guid directorId)
         {
             if (directorId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(directorId));
             }
 
-            return _context.Movies
+            return await Task.FromResult(_context.Movies
                         .Where(x => x.DirectorId == directorId)
-                        .OrderBy(x => x.Title).ToList();
+                        .OrderBy(x => x.Title).ToList());
         }
 
         public void UpdateMovie(Movie movie)

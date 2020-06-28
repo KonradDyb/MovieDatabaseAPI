@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 namespace MovieDatabase.API.Controllers
 {
-    [ApiController]
     [Route("api/directorcollections")]
     public class DirectorCollectionsController : ApiController
     {
@@ -27,17 +26,14 @@ namespace MovieDatabase.API.Controllers
             [FromRoute]
             [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
-
             var result = await Mediator.Send(new GetDirectorCollectionQuery { Ids = ids});
 
             return result != null ? (IActionResult)Ok(result) : NotFound();
 
         }
 
-
         // array key: 1,2,3
         // composite key: key1=value1, key2=value2
-
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<DirectorDto>>> CreateDirectorCollection(
@@ -45,7 +41,6 @@ namespace MovieDatabase.API.Controllers
         {
             var result = await Mediator.Send(new CreateDirectorCollectionCommand { Directors = directors});
            
-
             return CreatedAtRoute("GetDirectorCollection",
                 new { ids = string.Join(",", result.Select(x => x.Id))},
                 result);

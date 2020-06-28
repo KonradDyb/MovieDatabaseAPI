@@ -1,79 +1,49 @@
 ﻿using Application.Directors;
 using Application.Movies;
+using Application.Movies.Commands;
+using Application.Movies.Queries;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieDatabase.API.Controllers
 {
-    [ApiController]
     [Route("api/directors/{directorId}/movies")]
-    public class MoviesController : ControllerBase
+    public class MoviesController : ApiController
     {
-        private readonly IMovieDatabaseRepository _movieDatabaseRepository;
-        private readonly IMapper _mapper;
-
-        public MoviesController(IMovieDatabaseRepository movieDatabaseRepository,
-            IMapper mapper)
-        {
-            _movieDatabaseRepository = movieDatabaseRepository ?? throw new ArgumentNullException(nameof(movieDatabaseRepository));
-            _mapper = mapper;
-        }
-
         [HttpGet]
-        public ActionResult<IEnumerable<MovieDto>> GetMoviesForDirector(Guid directorId)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMoviesForDirector(
+            Guid directorId)
         {
-            if (!_movieDatabaseRepository.DirectorExists(directorId))
-            {
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetMoviesForDirectorQuery 
+            { DirectorId = directorId});
 
-            var moviesFromRepo = _movieDatabaseRepository.GetMovies(directorId);
-            return Ok(_mapper.Map<IEnumerable<MovieDto>>(moviesFromRepo));
+            return result != null ? (ActionResult)Ok(result) : NotFound();
         }
 
         [HttpGet("{movieId}", Name = "GetMovieForDirector")]
-        public ActionResult<MovieDto> GetMovieForDirector(Guid directorId, Guid movieId)
+        public async Task<ActionResult<MovieDto>> GetMovieForDirector(
+            Guid directorId, Guid movieId)
         {
-            if (!_movieDatabaseRepository.DirectorExists(directorId))
-            {
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetMovieForDirectorQuery
+            { DirectorId = directorId, MovieId = movieId });
 
-            var movieForDirectorFromRepo = _movieDatabaseRepository.GetMovie(directorId, movieId);
-
-            if (movieForDirectorFromRepo == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<MovieDto>(movieForDirectorFromRepo));
+            return result != null ? (ActionResult)Ok(result): NotFound();
         }
 
         [HttpPost]
-        public ActionResult<DirectorDto> CreateMovieForDirector(
+        public async Task<ActionResult<DirectorDto>> CreateMovieForDirector(
             Guid directorId, MovieForCreationDto movie)
         {
-            if (!_movieDatabaseRepository.DirectorExists(directorId))
-            {
-                return NotFound();
-            }
-
-            var movieEntity = _mapper.Map<Movie>(movie);
-            _movieDatabaseRepository.AddMovie(directorId, movieEntity);
-            _movieDatabaseRepository.Save();
-
-            var movieToReturn = _mapper.Map<MovieDto>(movieEntity);
+            var result = await Mediator.Send(new CreateMovieForDirectorCommand 
+            { Movie = movie, DirectorId = directorId });
 
             return CreatedAtRoute("GetMovieForDirector",
-                new { directorId = movieToReturn.DirectorId, movieId = movieToReturn.Id }, movieToReturn);
+                new { directorId = result.DirectorId, movieId = result.Id }, result);
 
 
         }

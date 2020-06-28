@@ -22,9 +22,9 @@ namespace Application.Directors.Commands
          = new List<MovieForCreationDto>();
     }
 
-    public class CreateDirectorCommandHandler : IRequestHandler<CreateDirectorCommand, DirectorDto>
+    public class CreateDirectorCommandHandler : IRequestHandler 
+        <CreateDirectorCommand, DirectorDto>
     {
-
         private readonly IMovieDatabaseRepository _movieDatabaseRepository;
         private readonly IMapper _mapper;
 
@@ -34,7 +34,8 @@ namespace Application.Directors.Commands
             _mapper = mapper;
         }
 
-        public async Task<DirectorDto> Handle(CreateDirectorCommand request, CancellationToken cancellationToken)
+        public async Task<DirectorDto> Handle(CreateDirectorCommand request, 
+            CancellationToken cancellationToken)
         {
             var directorEntity = _mapper.Map<Director>(request);
             //At this moment, the entity hasnt been added to database.
