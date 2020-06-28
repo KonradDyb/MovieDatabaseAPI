@@ -14,10 +14,10 @@ namespace Domain.Interfaces
         void DeleteMovie(Movie movie);
         Task<IEnumerable<Director>> GetDirectors();
         Task<Director> GetDirector(Guid directorId);
-        IEnumerable<Director> GetDirectors(IEnumerable<Guid> directorIds);
+        Task<IEnumerable<Director>> GetDirectors(IEnumerable<Guid> directorIds);
         //IEnumerable<Director> GetDirectors(int yearOfBirth);
         Task<IEnumerable<Director>> GetDirectors(IDirectorsResourceParameters directorsResourceParameters);
-        void AddDirector(Director director);
+        Task AddDirector(Director director);
         void DeleteDirector(Director director);
         void UpdateDirector(Director director);
         bool DirectorExists(Guid directorId);

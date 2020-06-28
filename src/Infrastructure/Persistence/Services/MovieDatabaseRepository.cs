@@ -73,7 +73,7 @@ namespace Infrastructure.Persistence.Services
             // no code in this implementation
         }
 
-        public void AddDirector(Director director)
+        public async Task AddDirector(Director director)
         {
             if (director == null)
             {
@@ -90,7 +90,7 @@ namespace Infrastructure.Persistence.Services
 
             // DbContext will contains a new author and the new list of courses for that author.
             // When we call Save these are persisted.
-            _context.Directors.Add(director);
+            await Task.FromResult(_context.Directors.Add(director));
         }
 
         public bool DirectorExists(Guid directorId)
@@ -128,17 +128,17 @@ namespace Infrastructure.Persistence.Services
             return await Task.FromResult(_context.Directors.ToList<Director>());
         }
          
-        public IEnumerable<Director> GetDirectors(IEnumerable<Guid> directorIds)
+        public async Task<IEnumerable<Director>> GetDirectors(IEnumerable<Guid> directorIds)
         {
             if (directorIds == null)
             {
                 throw new ArgumentNullException(nameof(directorIds));
             }
 
-            return _context.Directors.Where(x => directorIds.Contains(x.Id))
+            return await Task.FromResult(_context.Directors.Where(x => directorIds.Contains(x.Id))
                 .OrderBy(x => x.FirstName)
                 .OrderBy(x => x.LastName)
-                .ToList();
+                .ToList());
         }
 
         public void UpdateDirector(Director director)

@@ -34,15 +34,15 @@ namespace Application.Directors.Commands
             _mapper = mapper;
         }
 
-        public Task<DirectorDto> Handle(CreateDirectorCommand request, CancellationToken cancellationToken)
+        public async Task<DirectorDto> Handle(CreateDirectorCommand request, CancellationToken cancellationToken)
         {
             var directorEntity = _mapper.Map<Director>(request);
             //At this moment, the entity hasnt been added to database.
             //It's been added on the DbContext, which represents a session with database.
-            _movieDatabaseRepository.AddDirector(directorEntity);
+            await _movieDatabaseRepository.AddDirector(directorEntity);
             _movieDatabaseRepository.Save();
 
-            return Task.FromResult(_mapper.Map<DirectorDto>(directorEntity));
+            return _mapper.Map<DirectorDto>(directorEntity);
         }
     }
 }

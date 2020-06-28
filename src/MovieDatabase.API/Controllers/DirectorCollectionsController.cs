@@ -1,9 +1,12 @@
 ﻿using Application.Common.Helpers;
+using Application.DirectorCollections.Commands;
+using Application.DirectorCollections.Queries;
 using Application.Directors;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence.Services;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,40 +18,19 @@ namespace MovieDatabase.API.Controllers
 {
     [ApiController]
     [Route("api/directorcollections")]
-    public class DirectorCollectionsController : ControllerBase
+    public class DirectorCollectionsController : ApiController
     {
-        private readonly IMovieDatabaseRepository _movieDatabaseRepository;
-        private readonly IMapper _mapper;
-
-        public DirectorCollectionsController(IMovieDatabaseRepository movieDatabaseRepository,
-            IMapper mapper)
-        {
-            _movieDatabaseRepository = movieDatabaseRepository ?? throw new ArgumentNullException(nameof(movieDatabaseRepository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
         // parameters ids is an array of GUIDs
         // there's no implicit binding to such an array that's part of the route
         [HttpGet("({ids})", Name = "GetDirectorCollection")]
-        public IActionResult GetDirectorCollection(
+        public async Task<IActionResult> GetDirectorCollection(
             [FromRoute]
             [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
-            if (ids == null)
-            {
-                return BadRequest();
-            }
 
-            var directorEntities = _movieDatabaseRepository.GetDirectors(ids);
+            var result = await Mediator.Send(new GetDirectorCollectionQuery { Ids = ids});
 
-            if (ids.Count() != directorEntities.Count())
-            {
-                return NotFound();
-            }
-
-            var directorsToReturn = _mapper.Map<IEnumerable<DirectorDto>>(directorEntities);
-
-            return Ok(directorsToReturn);
+            return result != null ? (IActionResult)Ok(result) : NotFound();
 
         }
 
@@ -56,24 +38,17 @@ namespace MovieDatabase.API.Controllers
         // array key: 1,2,3
         // composite key: key1=value1, key2=value2
 
+
         [HttpPost]
-        public ActionResult<IEnumerable<DirectorDto>> CreateDirectorCollection(
-            IEnumerable<DirectorForCreationDto> directorCollection)
+        public async Task<ActionResult<IEnumerable<DirectorDto>>> CreateDirectorCollection(
+           IEnumerable<DirectorForCreationDto> directors)
         {
-            var directorEntities = _mapper.Map<IEnumerable<Director>>(directorCollection);
-            foreach (var director in directorEntities)
-            {
-                _movieDatabaseRepository.AddDirector(director);
-            }
-
-            _movieDatabaseRepository.Save();
-
-            var directorCollectionToReturn = _mapper.Map<IEnumerable<DirectorDto>>(directorEntities);
-            var idsAsString = string.Join(",", directorCollectionToReturn.Select(x => x.Id));
+            var result = await Mediator.Send(new CreateDirectorCollectionCommand { Directors = directors});
+           
 
             return CreatedAtRoute("GetDirectorCollection",
-                new { ids = idsAsString },
-                directorCollectionToReturn);
+                new { ids = string.Join(",", result.Select(x => x.Id))},
+                result);
         }
     }
 }
