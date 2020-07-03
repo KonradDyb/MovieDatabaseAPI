@@ -28,6 +28,9 @@
     "Docker": {
       "commandName": "Project",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
       "sqlDebugging": false,
       "publishAllPorts": true,
       "applicationUrl": ""
