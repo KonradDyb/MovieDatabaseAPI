@@ -31,6 +31,7 @@ namespace Application.Common.Mappings
             CreateMap<DirectorForCreationDto, Director>();
             CreateMap<MovieForCreationDto, Movie>();
             CreateMap<CreateDirectorCommand, Director>();
+            CreateMap<MovieForUpdateDto, Movie>();
         }
     }
 }

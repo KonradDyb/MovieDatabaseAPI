@@ -1,6 +1,8 @@
 ﻿using Application.Directors;
 using Application.Movies;
 using Application.Movies.Commands;
+using Application.Movies.Commands.CreateMovieForDirector;
+using Application.Movies.Commands.UpdateMovieForDirector;
 using Application.Movies.Queries;
 using AutoMapper;
 using Domain.Entities;
@@ -44,8 +46,18 @@ namespace MovieDatabase.API.Controllers
 
             return CreatedAtRoute("GetMovieForDirector",
                 new { directorId = result.DirectorId, movieId = result.Id }, result);
-
-
         }
+
+        [HttpPut("{movieId}")]
+        public async Task<ActionResult> UpdateMovieForDirector(Guid directorId, 
+            Guid movieId,
+            MovieForUpdateDto movie)
+        {
+            var result = await Mediator.Send(new UpdateMovieForDirectorCommand
+            { DirectorId = directorId, MovieId = movieId, Movie = movie });
+
+            return result == true ? (ActionResult)NoContent() : NotFound();
+        }
+
     }
 }

@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Movies.Commands
+namespace Application.Movies.Commands.CreateMovieForDirector
 {
     public class CreateMovieForDirectorCommand : IRequest<MovieDto>
     {
