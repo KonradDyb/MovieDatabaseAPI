@@ -12,12 +12,12 @@ namespace Application.Common
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var movie = (MovieForCreationDto)validationContext.ObjectInstance;
+            var movie = (MovieForManipulationDto)validationContext.ObjectInstance;
 
             if (movie.Title == movie.Description)
             {
                 return new ValidationResult(ErrorMessage,
-                    new[] { nameof(MovieForCreationDto) });
+                    new[] { nameof(MovieForManipulationDto) });
             }
 
             return ValidationResult.Success;

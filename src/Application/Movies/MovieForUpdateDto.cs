@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Movies
 {
-    public class MovieForUpdateDto
+    public class MovieForUpdateDto : MovieForManipulationDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+       
     }
 }
