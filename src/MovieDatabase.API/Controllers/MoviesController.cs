@@ -2,11 +2,13 @@
 using Application.Movies;
 using Application.Movies.Commands;
 using Application.Movies.Commands.CreateMovieForDirector;
+using Application.Movies.Commands.PartiallyUpdateMovieForDirector;
 using Application.Movies.Commands.UpdateMovieForDirector;
 using Application.Movies.Queries;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -59,5 +61,15 @@ namespace MovieDatabase.API.Controllers
             return result == true ? (ActionResult)NoContent() : NotFound();
         }
 
+        [HttpPatch("{movieId}")]
+        public async Task<ActionResult> PartiallyUpdateMovieForDirector(Guid directorid,
+            Guid movieId,
+            JsonPatchDocument<MovieForUpdateDto> patchDocument)
+        {
+            var result = await Mediator.Send(new PartiallyUpdateMovieForDirectorCommand
+            { DirectorId = directorid, MovieId = movieId, PatchDocument = patchDocument });
+
+            return result == true ? (ActionResult)NoContent() : NotFound();
+        }
     }
 }
